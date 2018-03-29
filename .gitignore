@@ -1,4 +1,6 @@
 dist/
 node_modules/
 typings/
+confs/keys.json
+confs/settings.json
 package-lock.json
