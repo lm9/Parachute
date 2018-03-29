@@ -1,10 +1,9 @@
-// bot.js
-// most of type annotations are not needed in an actual project, this is just an example
+import jQuery from 'jquery'
 import { Client, Message, Member, AnyChannel, VoiceChannel, Collection, VoiceState} from 'eris';
 
 class Parachute{
 	private client: Client;
-	private owner: string;
+	private owner: string; // オーナのid
 	private prefix: string;
 
 	constructor(token: string, owner: string, prefix: string = "!")
@@ -14,10 +13,14 @@ class Parachute{
 		this.prefix = prefix;
 		this.setup();
 	}
+
+	// 実行
 	run()
 	{
 		this.client.connect();
 	}
+
+	// セットアップ
 	private setup()
 	{
 		this.client.on('messageCreate', async (message: Message) => {
@@ -33,6 +36,8 @@ class Parachute{
 			console.log(`Ready as ${this.client.user.username}#${this.client.user.discriminator}`);
 		});
 	}
+	
+	// コマンドのチェック
 	private command_match(content: string, command: string): boolean
 	{
 		if(content.match(new RegExp(String.raw`${this.prefix}${command}`)))
@@ -43,6 +48,8 @@ class Parachute{
 			return false;
 		}
 	}
+
+	// ボイチャにおる人間を返すよう
 	private get_voice_channel_members(message: Message): Collection<Member> | null{
 		if(message.member && message.member.voiceState.channelID)
 		{
@@ -59,6 +66,8 @@ class Parachute{
 		}
 		return null;
 	}
+
+	// botの停止コマンド
 	private stop(message: Message)
 	{
 		if(message.author.id !== this.owner) return;
@@ -67,6 +76,8 @@ class Parachute{
 			this.client.disconnect({reconnect: false});
 		}
 	}
+
+	// 返信チェック用のping/pong
 	private pingpong(message: Message)
 	{
 		if(this.command_match(message.content, "ping"))
@@ -78,50 +89,54 @@ class Parachute{
 			}
 		}
 	}
-	// for squad x2
+
+	// Member[]をシャッフルして返す	
+	private shuffle_members(members: Member[])
+	{
+		// Fisher-Yates shuffle
+		for(let i = members.length - 1; i > 0; i--)
+		{
+			let n = Math.floor(Math.random() * (i + 1));
+			let tmp = members[i];
+			members[i] = members[n];
+			members[n] = tmp;
+		}
+	}
+
+	// 通話にいるメンバからチームわけをします
 	private auto_grouping(message: Message)
 	{
 		if(this.command_match(message.content, "team"))
 		{
-			const members = this.get_voice_channel_members(message);
-			if(members/* && members.size >= 5*/)
+			let _members = this.get_voice_channel_members(message);
+			let members: Member[] = [];
+
+			if(!_members) return; // null check
+
+			// 配列に移し替える
+			_members.forEach((member: Member) => {	
+				members.push(member);
+			});
+
+			// シャッフルを行う
+			this.shuffle_members(members);
+				
+			// メッセージの組み立て
+			let mes: string = "TEAM1:";
+			for(let i = 0; i < members.length; ++i)
 			{
-				const members_count: number = members.size;
-
-				let teams: Member[][] = [[], []];
-				let cnt:number = 0;
-
-				// おるメンツを適当に並び替える
-				while(members.size > 0)
+				if(i == Math.floor(members.length / 2))
 				{
-					cnt++;
-					const member = members.random();
-					teams[cnt > Math.floor(members_count / 2) ? 0 : 1].push(member);
-					members.delete(member.id); // キーとidが同じなので
+					mes += "\nTEAM2:";
 				}
-
-				let mes: string = "";
-				for(let i = 0; i < 2; ++i)
-				{
-					mes += `Team ${i + 1}`;
-					for(let j = 0; j < teams[i].length; ++j)
-					{
-						mes += ` ${teams[i][j].username}${j < teams[i].length -1 ? "," : "\n"}`;
-					}
-				}
-				try{
-					message.channel.createMessage(mes);
-				} catch(e) {
-					console.log(e);
-				}
+				mes += ` ${members[i].username}`;
 			}
-			else
-			{
-				try{
-					message.channel.createMessage("なんらかのエラーがあり，メンバーが足りていない，実行者がボイスチャンネルに参加していないなどが考えられます．");
-				} catch(e){
-					console.error(e);
-				}
+
+			// メッセージの送信
+			try{
+				message.channel.createMessage(mes);
+			} catch(e) {
+				console.log(e);
 			}
 		}
 	}

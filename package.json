@@ -14,8 +14,10 @@
     "typescript": "^2.6.1"
   },
   "dependencies": {
+    "@types/jquery": "^3.3.1",
     "@types/node": "^9.6.0",
     "eris": "^0.8.5",
+    "jquery": "^3.3.1",
     "typings": "^2.1.1"
   }
 }
