@@ -50,7 +50,8 @@ class Parachute{
 	}
 
 	// ボイチャにおる人間を返すよう
-	private get_voice_channel_members(message: Message): Collection<Member> | null{
+	private get_voice_channel_members(message: Message): Collection<Member> | null
+	{
 		if(message.member && message.member.voiceState.channelID)
 		{
 			try{
