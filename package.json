@@ -1,0 +1,21 @@
+{
+  "name": "Parachute",
+  "version": "1.0.0",
+  "description": "",
+  "main": "./dist/app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node ./dist/app.js",
+    "build": "tsc"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "typescript": "^2.6.1"
+  },
+  "dependencies": {
+    "@types/node": "^9.6.0",
+    "eris": "^0.8.5",
+    "typings": "^2.1.1"
+  }
+}
