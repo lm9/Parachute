@@ -44,7 +44,7 @@ class Parachute{
 		{
 			return true;
 		}
-		{
+		else {
 			return false;
 		}
 	}
