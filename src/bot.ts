@@ -47,7 +47,7 @@ class Parachute{
 		if(message.member && message.member.voiceState.channelID)
 		{
 			try{
-				const channel: VoiceChannel = this.client.getChannel(message.member.voiceState.channelID);
+				const channel: any = this.client.getChannel(message.member.voiceState.channelID);
 				if(channel.voiceMembers)
 				{
 					return channel.voiceMembers;
@@ -96,7 +96,7 @@ class Parachute{
 				{
 					cnt++;
 					const member = members.random();
-					teams[cnt > parseInt(members_count / 2) ? 0 : 1].push(member);
+					teams[cnt > Math.floor(members_count / 2) ? 0 : 1].push(member);
 					members.delete(member.id); // キーとidが同じなので
 				}
 
