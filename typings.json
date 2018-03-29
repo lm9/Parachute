@@ -3,6 +3,5 @@
     "mz": "registry:npm/mz#2.4.0+20161114225638"
   },
   "globalDependencies": {
-    "eris": "github:aurieh/eris-typings"
   }
 }

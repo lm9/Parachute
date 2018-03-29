@@ -47,7 +47,7 @@ class Parachute{
 		if(message.member && message.member.voiceState.channelID)
 		{
 			try{
-				const channel: any = this.client.getChannel(message.member.voiceState.channelID);
+				const channel:any = this.client.getChannel(message.member.voiceState.channelID);
 				if(channel.voiceMembers)
 				{
 					return channel.voiceMembers;
