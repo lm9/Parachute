@@ -1,5 +1,6 @@
 import jQuery from 'jquery'
 import { Client, Message, Member, AnyChannel, VoiceChannel, Collection, VoiceState} from 'eris';
+import Permission = require("./permission");
 
 class Parachute{
 	private client: Client;
@@ -21,9 +22,22 @@ class Parachute{
 	}
 
 	// コマンドの登録
-	public register_command(label: string, command: Function)
+	public register_command(label: string, command: Function, permission: Permission = Permission.USER)
 	{
 		this.client.on('messageCreate', async (message: Message) => {
+			// Guildによって切り分けたりもしたいが
+			switch(permission)
+			{
+				case Permission.USER:
+				break;
+				case Permission.OWNER:
+				if(message.author.id !== this.owner) return;
+				break;
+				case Permission.ADMIN:
+				// 特に今はないので
+				break;
+			}
+
 			if(this.command_match(message.content, label))
 			{
 				command(this.client,message);
@@ -35,13 +49,6 @@ class Parachute{
 	// セットアップ
 	private setup()
 	{
-		this.client.on('messageCreate', async (message: Message) => {
-			if (message.author.bot) return;
-			// prefixを通すもの
-			if (!message.content.startsWith(this.prefix)) return;
-			this.stop(message);
-		});
-
 		this.client.on('ready', () => {
 			console.log(`Ready as ${this.client.user.username}#${this.client.user.discriminator}`);
 		});
@@ -56,16 +63,6 @@ class Parachute{
 		}
 		else {
 			return false;
-		}
-	}
-
-	// botの停止コマンド
-	private stop(message: Message)
-	{
-		if(message.author.id !== this.owner) return;
-		if(this.command_match(message.content, "stop"))
-		{
-			this.client.disconnect({reconnect: false});
 		}
 	}
 }
