@@ -1,2 +1,2 @@
-import bot = require('./bot');
+import bot from './bot';
 bot.run();

@@ -1,5 +1,5 @@
 import { Client, Message, Collection, Member } from 'eris';
-import Parachute = require('./parachute');
+import Parachute from './parachute';
 
 function auto_grouping(client: Client, message: Message) {
   const members: Member[] = (() => {
