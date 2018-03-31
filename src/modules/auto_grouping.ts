@@ -1,5 +1,5 @@
 import { Client, Message, Collection, Member } from 'eris';
-import { Permission } from './parachute';
+import { Permission } from '../parachute';
 
 function auto_grouping(client: Client, message: Message) {
   const members: Member[] = (() => {

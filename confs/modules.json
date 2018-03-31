@@ -1,5 +1,5 @@
 [
-    "./auto_grouping",
-	"./ping_pong",
-    "./stop"
+    "auto_grouping",
+	"ping_pong",
+    "stop"
 ]

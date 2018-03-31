@@ -12,7 +12,7 @@ const prefix = settings['command_prefix'];
 
 const parachute = new Parachute(token, owner, prefix);
 modules.forEach((moduleFile: string) => {
-  const parachuteModule: {label: string, command: Function, permission: Permission} = require(moduleFile);
+  const parachuteModule: {label: string, command: Function, permission: Permission} = require("./modules/" + moduleFile);
   parachute.register_command(parachuteModule);
 });
 

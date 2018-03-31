@@ -1,5 +1,5 @@
 import { Client, Message, Collection, Member } from 'eris';
-import { Permission } from './parachute';
+import { Permission } from '../parachute';
 
 function ping_pong(client: Client, message: Message) {
   try {
