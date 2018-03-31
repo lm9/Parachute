@@ -1,5 +1,5 @@
 import { Client, Message, Collection, Member } from 'eris';
-import Parachute = require('./parachute');
+import { Permission } from '../parachute';
 
 function auto_grouping(client: Client, message: Message) {
   const members: Member[] = (() => {
@@ -57,4 +57,4 @@ function shuffle_members(members: Member[]) {
   }
 }
 
-export = { label: 'team', command: auto_grouping, permission: Parachute.Permission.USER };
+export = { label: 'team', command: auto_grouping, permission: Permission.USER };
