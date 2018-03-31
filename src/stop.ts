@@ -1,5 +1,5 @@
 import { Client, Message, Collection, Member } from 'eris';
-import Parachute from './Parachute';
+import Parachute from './parachute';
 
 function stop(client: Client, message: Message) {
   client.disconnect({ reconnect: false });    
