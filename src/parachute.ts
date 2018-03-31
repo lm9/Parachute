@@ -1,4 +1,3 @@
-import jQuery from 'jquery'
 import { Client, Message, Member, AnyChannel, VoiceChannel, Collection, VoiceState} from 'eris';
 
 class Parachute{
