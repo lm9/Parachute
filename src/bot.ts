@@ -1,5 +1,5 @@
 import Parachute = require("./parachute");
-import * as fs from "fs";
+import * as fs from "fs-extra";
 import {Client, Message, Collection, Member} from "eris";
 
 // parachute modules
