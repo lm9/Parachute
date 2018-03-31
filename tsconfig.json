@@ -12,6 +12,10 @@
   },
   "files": [
     "src/bot.ts",
+    "src/parachute.ts",
     "src/app.ts",
+    "src/auto_grouping.ts",
+    "src/ping_pong.ts",
+    "src/stop.ts"
   ],
 }
