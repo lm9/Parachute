@@ -1,6 +1,5 @@
 import jQuery from 'jquery'
 import { Client, Message, Member, AnyChannel, VoiceChannel, Collection, VoiceState} from 'eris';
-import Permission = require("./permission");
 
 class Parachute{
 	private client: Client;
@@ -22,18 +21,18 @@ class Parachute{
 	}
 
 	// コマンドの登録
-	public register_command(label: string, command: Function, permission: Permission = Permission.USER)
+	public register_command(label: string, command: Function, permission: Parachute.Permission = Parachute.Permission.USER)
 	{
 		this.client.on('messageCreate', async (message: Message) => {
 			// Guildによって切り分けたりもしたいが
 			switch(permission)
 			{
-				case Permission.USER:
+				case Parachute.Permission.USER:
 				break;
-				case Permission.OWNER:
+				case Parachute.Permission.OWNER:
 				if(message.author.id !== this.owner) return;
 				break;
-				case Permission.ADMIN:
+				case Parachute.Permission.ADMIN:
 				// 特に今はないので
 				break;
 			}
@@ -64,6 +63,15 @@ class Parachute{
 		else {
 			return false;
 		}
+	}
+}
+
+module Parachute{
+	export enum Permission
+	{
+		OWNER,
+		ADMIN,
+		USER
 	}
 }
 

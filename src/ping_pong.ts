@@ -1,5 +1,5 @@
 import {Client, Message, Collection, Member} from "eris";
-import Permission = require("./permission");
+import Parachute = require("./parachute");
 
 function ping_pong(client: Client, message: Message)
 {
@@ -10,4 +10,4 @@ function ping_pong(client: Client, message: Message)
     }
 }
 
-export = {label: "ping", command: ping_pong, permission: Permission.USER};
+export = {label: "ping", command: ping_pong, permission: Parachute.Permission.USER};

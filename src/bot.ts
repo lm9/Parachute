@@ -1,5 +1,4 @@
 import Parachute = require("./parachute");
-import Permission = require("./permission");
 import * as fs from "fs";
 import {Client, Message, Collection, Member} from "eris";
 
