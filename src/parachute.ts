@@ -26,7 +26,23 @@ module Parachute {
     }
   
     // コマンドの登録
-    public register_command(label: string, command: Function, permission: Permission = Permission.USER) {
+    public register_command(label: string, command: Function, permission: Permission): void;
+    public register_command(module: { label: string, command: Function, permission: Permission }): void;
+    public register_command(arg1?: any, arg2?: any, arg3?: any) {
+      let label: string;
+      let command: Function;
+      let permission: Permission;
+
+      if (typeof arg1 === 'string') {
+        label = arg1;
+        command = arg2;
+        permission = arg3;
+      } else {
+        label = arg1.label;
+        command = arg1.command;
+        permission = arg1.permission;
+      }
+
       this.client.on('messageCreate', async (message: Message) => {
         // Guildによって切り分けたりもしたいが
         switch (permission) {
@@ -45,7 +61,7 @@ module Parachute {
         }
       });
     }
-  
+      
     // セットアップ
     private setup() {
       this.client.on('ready', () => {
