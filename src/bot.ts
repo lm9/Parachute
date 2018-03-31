@@ -1,4 +1,4 @@
-import Parachute from './parachute';
+import { Parachute, Permission } from './parachute';
 import * as fs from 'fs-extra';
 import { Client, Message, Collection, Member } from 'eris';
 
@@ -12,7 +12,7 @@ const prefix = settings['command_prefix'];
 
 const parachute = new Parachute(token, owner, prefix);
 modules.forEach((moduleFile: string) => {
-  const parachuteModule: {label: string, command: Function, permission: Parachute.Permission} = require(moduleFile);
+  const parachuteModule: {label: string, command: Function, permission: Permission} = require(moduleFile);
   parachute.register_command(parachuteModule.label, parachuteModule.command, parachuteModule.permission);
 });
 
