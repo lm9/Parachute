@@ -56,8 +56,9 @@ module Parachute {
             break;
         }
   
-        if (this.command_match(message.content, label)) {
-          command(this.client,message);
+        const args = this.command_match(message.content, label);
+        if (args) {
+          command(this.client, message/*, args*/);
         }
       });
     }
@@ -70,11 +71,13 @@ module Parachute {
     }
     
     // コマンドのチェック
-    private command_match(content: string, command: string): boolean {
-      if (content.match(new RegExp(String.raw`${this.prefix}${command}`))) {
-        return true;
+    private command_match(content: string, command: string): string[] | null {
+      const args = content.split(" ");
+      if (args[0] === `${this.prefix}${command}`) {
+        args.shift();
+        return args;
       }
-      return false;
+      return null;
     }
   }
 }
