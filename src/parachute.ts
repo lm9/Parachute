@@ -28,19 +28,24 @@ module Parachute {
     // コマンドの登録
     public register_command(label: string, command: Function | ParachuteModule, permission: Permission): void;
     public register_command(module: { label: string, command: Function | ParachuteModule, permission: Permission }): void;
-    public register_command(arg1?: any, arg2?: any, arg3?: any) {
+    public register_command(...args: any[]) {
       let label: string;
       let command: Function | ParachuteModule;
       let permission: Permission;
 
-      if (typeof arg1 === 'string' && typeof arg3 === 'number') {
-        label = arg1;
-        command = arg2;
-        permission = arg3;
-      } else {
-        label = arg1.label;
-        command = arg1.command;
-        permission = arg1.permission;
+      switch (args.length) {
+        case 1:
+          label = args[0].label;
+          command = args[0].command;
+          permission = args[0].permission;
+          break;
+        case 3:
+          label = args[0];
+          command = args[1];
+          permission = args[2];
+          break;
+        default:
+          return;
       }
 
       this.client.on('messageCreate', async (message: Message) => {
