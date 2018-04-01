@@ -11,32 +11,15 @@ const prefix = settings['command_prefix'];
 
 const parachute = new Parachute(token, owner, prefix);
 
-const m = process.argv[1].match(/\.(.+)/);
-
-if (m) {
-  let modulesDir: string | null = null;
-  switch (m[1]) {
-    case 'js':
-      modulesDir = './dist/modules/';
-      break;
-    case 'ts':
-      modulesDir = './src/modules/';
-      break;
-    default:
-      break;
-  }
-  if (modulesDir) {
-    fs.readdir(modulesDir, (err: NodeJS.ErrnoException, files: string[]) => {
-      files.forEach((file: string) => {
-        const m = file.match(/([a-z0-9_]+)\..{1,4}$/);
-        if (m) {
-          const parachuteModule: {label: string, command: Function, permission: Permission} = require('./modules/' + m[1]);
-          parachute.register_command(parachuteModule);
-          
-        }
-      });
-    });
-  }
-}
+fs.readdir('./src/modules/', (err: NodeJS.ErrnoException, files: string[]) => {
+  files.forEach((file: string) => {
+    const m = file.match(/([a-z0-9_]+)\..{1,4}$/);
+    if (m) {
+      const parachuteModule: {label: string, command: Function, permission: Permission} = require('./modules/' + m[1]);
+      parachute.register_command(parachuteModule);
+      
+    }
+  });
+});
 
 export = parachute;
