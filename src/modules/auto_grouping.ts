@@ -5,16 +5,21 @@ class AutoGrouping implements ParachuteModule {
   readonly label: string = 'team';
   readonly permission: Permission = Permission.USER;
   readonly name: string = 'AutoGrouping';
+  private client?: Client;
   constructor() {
 
   }
-  run(client: Client, message: Message, args: string[] = []) {
+  public setup(client: Client) {
+    this.client = client;
+  }
+  run(message: Message, args: string[] = []) {
+    if (!this.client) return;
     const members: Member[] = (() => {
       const members: Member[] = [];
       // 空ならどうしようもない
       if (message.member && message.member.voiceState.channelID) {
         try {
-          const channel:any = client.getChannel(message.member.voiceState.channelID);
+          const channel:any = this.client.getChannel(message.member.voiceState.channelID);
           if (channel.voiceMembers) {
             channel.voiceMembers.forEach((member: Member) => {	
               members.push(member);

@@ -6,10 +6,14 @@ class PingPong implements ParachuteModule {
   readonly permission: Permission = Permission.USER;
   readonly name: string = 'PingPong';
   private called_count: number = 0;
+  private client?: Client;
   constructor() {
     this.called_count = 0;
   }
-  public run(client: Client, message: Message, args: string[] = []) {
+  public setup(client: Client) {
+    this.client = client;
+  }
+  public run(message: Message, args: string[] = []) {
     ++this.called_count;
     try {
       message.channel.createMessage('pong!');
@@ -20,6 +24,7 @@ class PingPong implements ParachuteModule {
       console.error(e);
     }
   }
+  
 }
 
 export = { label: 'ping', command: new PingPong(), permission: Permission.USER };

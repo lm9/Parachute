@@ -48,6 +48,11 @@ module Parachute {
           return;
       }
 
+      // clientを入れてやる
+      if (!(command instanceof Function)) {
+        command.setup(this.client);
+      }
+
       this.client.on('messageCreate', async (message: Message) => {
         // Guildによって切り分けたりもしたいが
         switch (permission) {
@@ -66,7 +71,7 @@ module Parachute {
           if (command instanceof Function) {
             command(this.client, message, args);
           } else {
-            command.run(this.client, message, args);            
+            command.run(message, args);            
           }
         }
       });
@@ -94,7 +99,8 @@ module Parachute {
     readonly label: string;
     readonly permission: Permission;
     readonly name: string;
-    run(client: Client, message: Message, args: string[]): void;
+    setup(client: Client): void;
+    run(message: Message, args: string[]): void;
   }
 }
 
