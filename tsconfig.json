@@ -16,6 +16,8 @@
     "src/app.ts",
     "src/modules/auto_grouping.ts",
     "src/modules/ping_pong.ts",
-    "src/modules/stop.ts"
+    "src/modules/stop.ts",
+    "src/modules/memo.ts",
+    "src/modules/info.ts"
   ],
 }

@@ -5,20 +5,22 @@ class PingPong implements ParachuteModule {
   readonly label: string = 'ping';
   readonly permission: Permission = Permission.USER;
   readonly name: string = 'PingPong';
-  private called_count: number = 0;
+  private called_count: {[key: string]: number} = {};
   private client?: Client;
   constructor() {
-    this.called_count = 0;
   }
   public setup(client: Client) {
     this.client = client;
   }
   public run(message: Message, args: string[] = []) {
-    ++this.called_count;
+    if (!this.called_count[message.channel.id]) {
+      this.called_count[message.channel.id] = 0;
+    }
+    ++this.called_count[message.channel.id];
     try {
       message.channel.createMessage('pong!');
       if (0 < args.length) {
-        message.channel.createMessage(JSON.stringify({args: args, called_count: this.called_count}));
+        message.channel.createMessage(JSON.stringify({args: args, called_count: this.called_count[message.channel.id]}));
       }
     } catch (e) {
       console.error(e);
