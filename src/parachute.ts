@@ -12,7 +12,7 @@ module Parachute {
     private client: Client;
     private owner: string; // オーナのid
     private prefix: string;
-  
+
     constructor(token: string, owner: string, prefix: string = '!') {
       this.client = new Client(token);
       this.owner = owner;
@@ -26,21 +26,31 @@ module Parachute {
     }
   
     // コマンドの登録
-    public register_command(label: string, command: Function, permission: Permission): void;
-    public register_command(module: { label: string, command: Function, permission: Permission }): void;
-    public register_command(arg1?: any, arg2?: any, arg3?: any) {
+    public register_command(label: string, command: Function | ParachuteModule, permission: Permission): void;
+    public register_command(module: { label: string, command: Function | ParachuteModule, permission: Permission }): void;
+    public register_command(...args: any[]) {
       let label: string;
-      let command: Function;
+      let command: Function | ParachuteModule;
       let permission: Permission;
 
-      if (typeof arg1 === 'string') {
-        label = arg1;
-        command = arg2;
-        permission = arg3;
-      } else {
-        label = arg1.label;
-        command = arg1.command;
-        permission = arg1.permission;
+      switch (args.length) {
+        case 1:
+          label = args[0].label;
+          command = args[0].command;
+          permission = args[0].permission;
+          break;
+        case 3:
+          label = args[0];
+          command = args[1];
+          permission = args[2];
+          break;
+        default:
+          return;
+      }
+
+      // clientを入れてやる
+      if (!(command instanceof Function)) {
+        command.setup(this.client);
       }
 
       this.client.on('messageCreate', async (message: Message) => {
@@ -56,10 +66,16 @@ module Parachute {
             break;
         }
   
-        if (this.command_match(message.content, label)) {
-          command(this.client,message);
+        const args = this.command_match(message.content, label);
+        if (args) {
+          if (command instanceof Function) {
+            command(this.client, message, args);
+          } else {
+            command.run(message, args);            
+          }
         }
       });
+      console.log(`Loaded module: ${command.name}`);      
     }
       
     // セットアップ
@@ -70,12 +86,21 @@ module Parachute {
     }
     
     // コマンドのチェック
-    private command_match(content: string, command: string): boolean {
-      if (content.match(new RegExp(String.raw`${this.prefix}${command}`))) {
-        return true;
+    private command_match(content: string, command: string): string[] | null {
+      const args = content.split(/[ 　]+/);
+      if (args[0] === `${this.prefix}${command}`) {
+        args.shift();
+        return args;
       }
-      return false;
+      return null;
     }
+  }
+  export interface ParachuteModule {
+    readonly label: string;
+    readonly permission: Permission;
+    readonly name: string;
+    setup(client: Client): void;
+    run(message: Message, args: string[]): void;
   }
 }
 
