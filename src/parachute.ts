@@ -91,6 +91,8 @@ module Parachute {
     }
   }
   export interface ParachuteModule {
+    readonly label: string;
+    readonly permission: Permission;
     readonly name: string;
     run(client: Client, message: Message, args: string[]): void;
   }

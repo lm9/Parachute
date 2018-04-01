@@ -1,7 +1,9 @@
 import { Client, Message, Collection, Member } from 'eris';
 import { Permission, ParachuteModule } from '../parachute';
 
-class PingPong implements ParachuteModule{
+class PingPong implements ParachuteModule {
+  readonly label: string = 'ping';
+  readonly permission: Permission = Permission.USER;
   readonly name: string = 'PingPong';
   private called_count: number = 0;
   constructor() {
