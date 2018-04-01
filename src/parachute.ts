@@ -58,7 +58,7 @@ module Parachute {
   
         const args = this.command_match(message.content, label);
         if (args) {
-          command(this.client, message/*, args*/);
+          command(this.client, message, args);
         }
       });
     }

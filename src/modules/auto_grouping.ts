@@ -1,7 +1,7 @@
 import { Client, Message, Collection, Member } from 'eris';
 import { Permission } from '../parachute';
 
-function auto_grouping(client: Client, message: Message) {
+function auto_grouping(client: Client, message: Message, args: string[] = []) {
   const members: Member[] = (() => {
     const members: Member[] = [];
     // 空ならどうしようもない
