@@ -70,6 +70,7 @@ module Parachute {
           }
         }
       });
+      console.log(`Loaded module: ${command.name}`);      
     }
       
     // セットアップ

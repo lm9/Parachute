@@ -17,7 +17,6 @@ fs.readdir('./src/modules/', (err: NodeJS.ErrnoException, files: string[]) => {
     if (m) {
       const parachuteModule:{ label: string, command: Function | ParachuteModule, permission: Permission } = require('./modules/' + m[1]);
       parachute.register_command(parachuteModule);
-      console.log(`Loaded module: ${m[1]}`);
     }
   });
 });
