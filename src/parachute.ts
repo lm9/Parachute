@@ -12,7 +12,6 @@ module Parachute {
     private client: Client;
     private owner: string; // オーナのid
     private prefix: string;
-    private parachute_modules: {[key: string]: ParachuteModule} = {};
 
     constructor(token: string, owner: string, prefix: string = '!') {
       this.client = new Client(token);
@@ -27,36 +26,14 @@ module Parachute {
     }
   
     // コマンドの登録
-    public register_command_from_instance(label: string, command: ParachuteModule, permission: Permission): void {
-      this.parachute_modules[label] = command;
-      this.client.on('messageCreate', (message: Message) => {
-        // Guildによって切り分けたりもしたいが
-        switch (permission) {
-          case Permission.USER:
-            break;
-          case Permission.OWNER:
-            if (message.author.id !== this.owner) return;
-            break;
-          case Permission.ADMIN:
-            // 特に今はないので
-            break;
-        }
-        const args = this.command_match(message.content, label);
-        if (args) {
-          this.parachute_modules[label].run(this.client, message, args);
-        }
-      });
-      
-    }
-
-    public register_command(label: string, command: Function, permission: Permission): void;
-    public register_command(module: { label: string, command: Function, permission: Permission }): void;
+    public register_command(label: string, command: Function | ParachuteModule, permission: Permission): void;
+    public register_command(module: { label: string, command: Function | ParachuteModule, permission: Permission }): void;
     public register_command(arg1?: any, arg2?: any, arg3?: any) {
       let label: string;
-      let command: Function;
+      let command: Function | ParachuteModule;
       let permission: Permission;
 
-      if (typeof arg1 === 'string' && arg2 instanceof Function && typeof arg3 === 'number') {
+      if (typeof arg1 === 'string'&& typeof arg3 === 'number') {
         label = arg1;
         command = arg2;
         permission = arg3;
@@ -81,7 +58,11 @@ module Parachute {
   
         const args = this.command_match(message.content, label);
         if (args) {
-          command(this.client, message, args);
+          if (command instanceof Function) {
+            command(this.client, message, args);
+          } else {
+            command.run(this.client, message, args);            
+          }
         }
       });
     }

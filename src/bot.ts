@@ -1,4 +1,4 @@
-import { Parachute, Permission } from './parachute';
+import { Parachute, Permission, ParachuteModule } from './parachute';
 import * as fs from 'fs-extra';
 import { Client, Message, Collection, Member } from 'eris';
 
@@ -15,15 +15,11 @@ fs.readdir('./src/modules/', (err: NodeJS.ErrnoException, files: string[]) => {
   files.forEach((file: string) => {
     const m = file.match(/([a-z0-9_]+)\..{1,4}$/);
     if (m) {
-      if (m[1] === 'ping_pong') return;
-      const parachuteModule = require('./modules/' + m[1]);
+      const parachuteModule:{ label: string, command: Function | ParachuteModule, permission: Permission } = require('./modules/' + m[1]);
       parachute.register_command(parachuteModule);
       console.log(`Loaded module: ${m[1]}`);
     }
   });
 });
-
-const ping_pong = require('./modules/ping_pong');
-parachute.register_command_from_instance(ping_pong.label, ping_pong.command, ping_pong.permission);
 
 export = parachute;
