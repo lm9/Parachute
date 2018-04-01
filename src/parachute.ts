@@ -33,7 +33,7 @@ module Parachute {
       let command: Function | ParachuteModule;
       let permission: Permission;
 
-      if (typeof arg1 === 'string'&& typeof arg3 === 'number') {
+      if (typeof arg1 === 'string' && typeof arg3 === 'number') {
         label = arg1;
         command = arg2;
         permission = arg3;
