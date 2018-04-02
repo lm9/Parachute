@@ -20,7 +20,12 @@ class PingPong implements ParachuteModule {
     try {
       message.channel.createMessage("pong!");
       if (0 < args.length) {
-        message.channel.createMessage(JSON.stringify({args: args, called_count: this.called_count[message.channel.id]}));
+        message.channel.createMessage(
+          JSON.stringify({
+            args: args,
+            called_count: this.called_count[message.channel.id]
+          })
+        );
       }
     } catch (e) {
       console.error(e);
@@ -28,4 +33,8 @@ class PingPong implements ParachuteModule {
   }
 }
 
-export = { label: "ping", command: new PingPong(), permission: Permission.USER };
+export = {
+  label: "ping",
+  command: new PingPong(),
+  permission: Permission.USER
+};

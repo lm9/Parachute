@@ -15,7 +15,11 @@ fs.readdir("./src/modules/", (err: NodeJS.ErrnoException, files: string[]) => {
   files.forEach((file: string) => {
     const m = file.match(/([a-z0-9_]+)\..{1,4}$/);
     if (m) {
-      const parachuteModule: { label: string, command: Function | ParachuteModule, permission: Permission } = require(`./modules/${m[1]}`);
+      const parachuteModule: {
+        label: string;
+        command: Function | ParachuteModule;
+        permission: Permission;
+      } = require(`./modules/${m[1]}`);
       parachute.register_command(parachuteModule);
     }
   });

@@ -25,6 +25,8 @@ class Memo implements ParachuteModule {
       this.memo_data[message.channel.id][message.author.id] = [];
     }
 
+    let memos = this.memo_data[message.channel.id][message.author.id];
+
     let mes = "";
 
     if (args.length < 1) {
@@ -41,17 +43,17 @@ memo -l: Your memos
             `;
             break;
           case "-l":
-            if (this.memo_data[message.channel.id][message.author.id].length < 1) {
+            if (memos.length < 1) {
               mes = "1件も保存されていません．\n";
             } else {
-              for (let i = 0; i < this.memo_data[message.channel.id][message.author.id].length; ++i) {
-                mes += `[${i}]: ${this.memo_data[message.channel.id][message.author.id][i]}\n`;
+              for (let i = 0; i < memos.length; ++i) {
+                mes += `[${i}]: ${memos[i]}\n`;
               }
             }
             break;
           default:
             // ソレ以外をメモする
-            this.memo_data[message.channel.id][message.author.id].push(arg);
+            memos.push(arg);
             ++memo_count;
             break;
         }
