@@ -4,3 +4,4 @@ typings/
 confs/keys.json
 confs/settings.json
 package-lock.json
+parachute.code-workspace
