@@ -86,7 +86,7 @@ namespace Parachute {
 
     // コマンドのチェック
     private command_match(content: string, command: string): string[] | null {
-      const args = content.split(/[ 　]+/);
+      const args = content.split(/ +/);
       if (args[0] === `${this.prefix}${command}`) {
         args.shift();
         return args;
