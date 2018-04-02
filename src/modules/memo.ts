@@ -1,25 +1,20 @@
-import { Client, Message, Collection, Member } from 'eris';
-import { Permission, ParachuteModule } from '../parachute';
+import { Client, Message, Collection, Member } from "eris";
+import { Permission, ParachuteModule } from "../parachute";
 
 class Memo implements ParachuteModule {
-  readonly label: string = 'memo';
+  readonly label: string = "memo";
   readonly permission: Permission = Permission.USER;
-  readonly name: string = 'Memo';
-  private called_count: {[key: string]: number} = {};
+  readonly name: string = "Memo";
+  private called_count: { [key: string]: number } = {};
   private client?: Client;
 
-  private memo_data: {[key: string]: {[key: string]: string[]}} = {};
-
-  constructor() {
-
-  }
+  private memo_data: { [key: string]: { [key: string]: string[] } } = {};
 
   public setup(client: Client) {
     this.client = client;
   }
 
   public run(message: Message, args: string[] = []) {
-
     // 初ちゃんねる
     if (!this.memo_data[message.channel.id]) {
       this.memo_data[message.channel.id] = {};
@@ -30,25 +25,24 @@ class Memo implements ParachuteModule {
       this.memo_data[message.channel.id][message.author.id] = [];
     }
 
-    let mes = '';
+    let mes = "";
 
     if (args.length < 1) {
-      mes = 'メモを保存するには少なくとも引数を1つ指定してください．';
+      mes = "メモを保存するには少なくとも引数を1つ指定してください．";
     } else {
-      let memo_count = 0;      
+      let memo_count = 0;
       args.forEach((arg: string) => {
         switch (arg) {
-          case '-help':
+          case "-help":
             mes = `
 memo <MEMO SENTENCE>
 memo -help: This help
 memo -l: Your memos
             `;
             break;
-          case '-l':
-            if (this.memo_data[message.channel.id][message.author.id].length < 1) 
-            {
-              mes = '1件も保存されていません．\n';
+          case "-l":
+            if (this.memo_data[message.channel.id][message.author.id].length < 1) {
+              mes = "1件も保存されていません．\n";
             } else {
               for (let i = 0; i < this.memo_data[message.channel.id][message.author.id].length; ++i) {
                 mes += `[${i}]: ${this.memo_data[message.channel.id][message.author.id][i]}\n`;
@@ -62,7 +56,7 @@ memo -l: Your memos
             break;
         }
       });
-      
+
       if (0 < memo_count) {
         mes += `${memo_count}件メモしました．`;
       }
@@ -77,4 +71,4 @@ memo -l: Your memos
   }
 }
 
-export = {label: 'memo', command: new Memo(), permission: Permission.USER};
+export = { label: "memo", command: new Memo(), permission: Permission.USER };

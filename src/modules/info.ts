@@ -1,17 +1,13 @@
-import { Client, Message, Collection, Member } from 'eris';
-import { Permission, ParachuteModule } from '../parachute';
+import { Client, Message, Collection, Member } from "eris";
+import { Permission, ParachuteModule } from "../parachute";
 
 class Info implements ParachuteModule {
-  readonly label: string = 'info';
+  readonly label: string = "info";
   readonly permission: Permission = Permission.USER;
-  readonly name: string = 'Info';
-  private called_count: {[key: string]: number} = {};
+  readonly name: string = "Info";
+  private called_count: { [key: string]: number } = {};
   private client?: Client;
-  
-  constructor() {
 
-  }
-  
   public setup(client: Client) {
     this.client = client;
   }
@@ -26,7 +22,6 @@ Repository: https://github.com/lm9/Parachute
       console.error(e);
     }
   }
-  
 }
 
-export = { label: 'info', command: new Info(), permission: Permission.USER };
+export = { label: "info", command: new Info(), permission: Permission.USER };

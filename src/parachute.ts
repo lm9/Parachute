@@ -1,30 +1,29 @@
-import { Client, Message, Member, AnyChannel, VoiceChannel, Collection, VoiceState } from 'eris';
+import { Client, Message, Member, Collection, VoiceState } from "eris";
 
-module Parachute {
-  export enum Permission
-  {
+namespace Parachute {
+  export enum Permission {
     OWNER,
     ADMIN,
-    USER,
+    USER
   }
 
-  export class Parachute{
+  export class Parachute {
     private client: Client;
     private owner: string; // オーナのid
     private prefix: string;
 
-    constructor(token: string, owner: string, prefix: string = '!') {
+    constructor(token: string, owner: string, prefix: string = "!") {
       this.client = new Client(token);
       this.owner = owner;
       this.prefix = prefix;
       this.setup();
     }
-  
+
     // 実行
     run() {
       this.client.connect();
     }
-  
+
     // コマンドの登録
     public register_command(label: string, command: Function | ParachuteModule, permission: Permission): void;
     public register_command(module: { label: string, command: Function | ParachuteModule, permission: Permission }): void;
@@ -53,7 +52,7 @@ module Parachute {
         command.setup(this.client);
       }
 
-      this.client.on('messageCreate', async (message: Message) => {
+      this.client.on("messageCreate", async (message: Message) => {
         // Guildによって切り分けたりもしたいが
         switch (permission) {
           case Permission.USER:
@@ -65,26 +64,26 @@ module Parachute {
             // 特に今はないので
             break;
         }
-  
+
         const args = this.command_match(message.content, label);
         if (args) {
           if (command instanceof Function) {
             command(this.client, message, args);
           } else {
-            command.run(message, args);            
+            command.run(message, args);
           }
         }
       });
-      console.log(`Loaded module: ${command.name}`);      
+      console.log(`Loaded module: ${command.name}`);
     }
-      
+
     // セットアップ
     private setup() {
-      this.client.on('ready', () => {
+      this.client.on("ready", () => {
         console.log(`Ready as ${this.client.user.username}#${this.client.user.discriminator}`);
       });
     }
-    
+
     // コマンドのチェック
     private command_match(content: string, command: string): string[] | null {
       const args = content.split(/[ 　]+/);
