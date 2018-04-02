@@ -98,6 +98,7 @@ namespace Parachute {
       return null;
     }
   }
+
   export interface ParachuteModule {
     readonly label: string;
     readonly permission: Permission;
