@@ -26,7 +26,11 @@ namespace Parachute {
 
     // コマンドの登録
     public register_command(label: string, command: Function | ParachuteModule, permission: Permission): void;
-    public register_command(module: { label: string, command: Function | ParachuteModule, permission: Permission }): void;
+    public register_command(module: {
+      label: string;
+      command: Function | ParachuteModule;
+      permission: Permission;
+    }): void;
     public register_command(...args: any[]) {
       let label: string;
       let command: Function | ParachuteModule;

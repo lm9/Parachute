@@ -18,9 +18,7 @@ class AutoGrouping implements ParachuteModule {
       // 空ならどうしようもない
       if (message.member && message.member.voiceState.channelID) {
         try {
-          const channel: any = this.client.getChannel(
-            message.member.voiceState.channelID
-          );
+          const channel: any = this.client.getChannel(message.member.voiceState.channelID);
           if (channel.voiceMembers) {
             channel.voiceMembers.forEach((member: Member) => {
               members.push(member);
