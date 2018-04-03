@@ -18,22 +18,32 @@ class DiscordMemo {
     }
 
     async add(user_id: string, channel_id: string, sentences: string[]) {
+        if (sentences.length < 1) return;
         const stmt = await this.db.prepare(`
         INSERT INTO memo(id, user_id, channel_id, sentence)
         VALUES(?, ?, ?, ?)
         `);
-        sentences.forEach(async (sentence) => {
-            this.db.begin()
-            .then(() => {
-                stmt.run(uuid(), user_id, channel_id, sentence).then(()=> {
-                    this.db.commit();
-                }).catch(err => {
-                    this.db.rollback();
-                }).then(() => {
-                    stmt.finalize();
+        this.db.begin().then(() => {
+            new Promise((resolve, reject) => {
+                let err = false;
+                sentences.forEach(async (sentence) => {
+                    stmt.run(uuid(), user_id, channel_id, sentence)
+                    .catch(() => {
+                        err = true;    
+                    }).then(() => {
+                        if (err) reject();
+                        else resolve();
+                    })
                 });
+            }).then(() => {
+                this.db.commit();
+            }).catch(() => {
+                this.db.rollback();
+            }).then(() => {
+                stmt.finalize();
             });
         });
+        
     }
 
     async list(user_id: string, channel_id: string) {

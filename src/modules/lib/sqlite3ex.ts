@@ -75,7 +75,7 @@ namespace sqlite3ex{
         run(...params: any[]) {
             return new Promise((resolve, reject) => {
                 this.stmt.run(params, (err) => {
-                    if (err) reject();
+                    if (err) reject(err);
                     else resolve();
                 });
             });
