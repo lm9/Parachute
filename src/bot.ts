@@ -16,9 +16,7 @@ fs.readdir("./src/modules/", (err: NodeJS.ErrnoException, files: string[]) => {
     const m = file.match(/([a-z0-9_]+)\..{1,4}$/);
     if (m) {
       import("./modules/" + m[1]).then((ParachuteModule) => {        
-        const pm = new ParachuteModule.default();
-        parachute.register_command(pm.label, pm, pm.permission);
-        
+        parachute.register_command(ParachuteModule.default);
       });
     }
   });

@@ -25,40 +25,13 @@ namespace Parachute {
     }
 
     // コマンドの登録
-    public register_command(label: string, command: Function | ParachuteModule, permission: Permission): void;
-    public register_command(module: {
-      label: string;
-      command: Function | ParachuteModule;
-      permission: Permission;
-    }): void;
-    public register_command(...args: any[]) {
-      let label: string;
-      let command: Function | ParachuteModule;
-      let permission: Permission;
-
-      switch (args.length) {
-        case 1:
-          label = args[0].label;
-          command = args[0].command;
-          permission = args[0].permission;
-          break;
-        case 3:
-          label = args[0];
-          command = args[1];
-          permission = args[2];
-          break;
-        default:
-          return;
-      }
-
-      // clientを入れてやる
-      if (!(command instanceof Function)) {
-        command.setup(this.client);
-      }
+    public register_command(module: any) {
+      
+      const pm: ParachuteModule = new module();
 
       this.client.on("messageCreate", async (message: Message) => {
         // Guildによって切り分けたりもしたいが
-        switch (permission) {
+        switch (pm.permission) {
           case Permission.USER:
             break;
           case Permission.OWNER:
@@ -69,16 +42,13 @@ namespace Parachute {
             break;
         }
 
-        const args = this.command_match(message.content, label);
+        const args = this.command_match(message.content, pm.label);
         if (args) {
-          if (command instanceof Function) {
-            command(this.client, message, args);
-          } else {
-            command.run(message, args);
-          }
+          pm.run(message, args);
         }
       });
-      console.log(`Loaded module: ${command.name}`);
+      
+      console.log(`Loaded module: ${pm.name}`);
     }
 
     // セットアップ
