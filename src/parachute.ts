@@ -29,6 +29,11 @@ namespace Parachute {
       
       const pm: ParachuteModule = new module();
 
+      // 必要なのものがとりあえず揃っている
+      if (!(pm.label && pm.name && pm.run)) return;
+
+      pm.setup(this.client);
+
       this.client.on("messageCreate", async (message: Message) => {
         // Guildによって切り分けたりもしたいが
         switch (pm.permission) {
