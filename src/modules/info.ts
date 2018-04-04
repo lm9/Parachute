@@ -1,15 +1,14 @@
 import { Client, Message, Collection, Member } from "eris";
 import { Permission, ParachuteModule } from "../parachute";
 
-export default class Info implements ParachuteModule {
+export default class Info extends ParachuteModule {
   readonly label: string = "info";
   readonly permission: Permission = Permission.USER;
   readonly name: string = "Info";
   private called_count: { [key: string]: number } = {};
-  private client?: Client;
 
-  public setup(client: Client) {
-    this.client = client;
+  constructor(client: Client) {
+    super(client);
   }
 
   public run(message: Message, args: string[] = []) {

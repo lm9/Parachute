@@ -2,20 +2,16 @@ import { Client, Message, Collection, Member } from "eris";
 import { Permission, ParachuteModule } from "../parachute";
 import DiscordMemo from "./lib/discord_memo"
 
-export default class Memo implements ParachuteModule {
+export default class Memo extends ParachuteModule {
   readonly label: string = "memo";
   readonly permission: Permission = Permission.USER;
   readonly name: string = "Memo";
   private called_count: { [key: string]: number } = {};
-  private client?: Client;
   private memo: DiscordMemo;
 
-  constructor() {
-    this.memo = new DiscordMemo("./db/demo.db");    
-  }
-
-  public setup(client: Client) {
-    this.client = client;
+  constructor(client: Client) {
+    super(client);
+    this.memo = new DiscordMemo("./db/demo.db");
   }
 
   public run(message: Message, args: string[] = []) {

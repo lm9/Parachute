@@ -1,15 +1,14 @@
 import { Client, Message, Collection, Member } from "eris";
 import { Permission, ParachuteModule } from "../parachute";
 
-export default class PingPong implements ParachuteModule {
+export default class PingPong extends ParachuteModule {
   readonly label: string = "ping";
   readonly permission: Permission = Permission.USER;
   readonly name: string = "PingPong";
   private called_count: { [key: string]: number } = {};
-  private client?: Client;
 
-  public setup(client: Client) {
-    this.client = client;
+  constructor(client: Client) {
+    super(client);
   }
 
   public run(message: Message, args: string[] = []) {

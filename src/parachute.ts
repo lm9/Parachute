@@ -27,12 +27,10 @@ namespace Parachute {
     // コマンドの登録
     public register_command(module: any) {
       
-      const pm: ParachuteModule = new module();
+      const pm: ParachuteModule = new module(this.client);
 
       // 必要なのものがとりあえず揃っている
       if (!(pm.label && pm.name && pm.run)) return;
-
-      pm.setup(this.client);
 
       this.client.on("messageCreate", async (message: Message) => {
         // Guildによって切り分けたりもしたいが
@@ -74,13 +72,17 @@ namespace Parachute {
     }
   }
 
-  export interface ParachuteModule {
-    readonly label: string;
-    readonly permission: Permission;
-    readonly name: string;
-    setup(client: Client): void;
-    run(message: Message, args: string[]): void;
+  export abstract class ParachuteModule {
+    abstract readonly label: string;
+    abstract readonly permission: Permission;
+    abstract readonly name: string;
+    protected client: Client;
+    constructor(client: Client) {
+      this.client = client;
+    }
+    abstract run(message: Message, args: string[]): void;
   }
+
 }
 
 export = Parachute;

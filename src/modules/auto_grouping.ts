@@ -1,14 +1,13 @@
 import { Client, Message, Collection, Member } from "eris";
 import { Permission, ParachuteModule } from "../parachute";
 
-export default class AutoGrouping implements ParachuteModule {
+export default class AutoGrouping extends ParachuteModule {
   readonly label: string = "team";
   readonly permission: Permission = Permission.USER;
   readonly name: string = "AutoGrouping";
-  private client?: Client;
 
-  public setup(client: Client) {
-    this.client = client;
+  constructor(client: Client) {
+    super(client);
   }
 
   run(message: Message, args: string[] = []) {
