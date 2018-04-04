@@ -10,7 +10,7 @@
     "clean": "rm -rf ./dist/*",
     "lint": "tslint 'src/**/*.ts'"
   },
-  "author": "",
+  "author": "lm9",
   "license": "ISC",
   "devDependencies": {
     "prettier": "^1.11.1",
