@@ -1,7 +1,7 @@
 import { Client, Message, Collection, Member } from "eris";
 import { Permission, ParachuteModule } from "../parachute";
 
-class Stop implements ParachuteModule{
+export default class Stop implements ParachuteModule{
   readonly label: string = "stop";
   readonly permission: Permission = Permission.OWNER;
   readonly name: string = "Stop";
@@ -16,5 +16,3 @@ class Stop implements ParachuteModule{
   }
 
 }
-
-export = { label: "stop", command: new Stop(), permission: Permission.OWNER };

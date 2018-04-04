@@ -1,7 +1,7 @@
 import { Client, Message, Collection, Member } from "eris";
 import { Permission, ParachuteModule } from "../parachute";
 
-class PingPong implements ParachuteModule {
+export default class PingPong implements ParachuteModule {
   readonly label: string = "ping";
   readonly permission: Permission = Permission.USER;
   readonly name: string = "PingPong";
@@ -32,9 +32,3 @@ class PingPong implements ParachuteModule {
     }
   }
 }
-
-export = {
-  label: "ping",
-  command: new PingPong(),
-  permission: Permission.USER
-};

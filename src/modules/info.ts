@@ -1,7 +1,7 @@
 import { Client, Message, Collection, Member } from "eris";
 import { Permission, ParachuteModule } from "../parachute";
 
-class Info implements ParachuteModule {
+export default class Info implements ParachuteModule {
   readonly label: string = "info";
   readonly permission: Permission = Permission.USER;
   readonly name: string = "Info";
@@ -23,5 +23,3 @@ Repository: https://github.com/lm9/Parachute
     }
   }
 }
-
-export = { label: "info", command: new Info(), permission: Permission.USER };

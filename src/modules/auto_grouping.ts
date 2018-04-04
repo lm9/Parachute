@@ -1,7 +1,7 @@
 import { Client, Message, Collection, Member } from "eris";
 import { Permission, ParachuteModule } from "../parachute";
 
-class AutoGrouping implements ParachuteModule {
+export default class AutoGrouping implements ParachuteModule {
   readonly label: string = "team";
   readonly permission: Permission = Permission.USER;
   readonly name: string = "AutoGrouping";
@@ -67,9 +67,3 @@ class AutoGrouping implements ParachuteModule {
     }
   }
 }
-
-export = {
-  label: "team",
-  command: new AutoGrouping(),
-  permission: Permission.USER
-};
