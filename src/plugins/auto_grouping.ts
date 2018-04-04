@@ -1,7 +1,7 @@
 import { Client, Message, Collection, Member } from "eris";
-import { Permission, ParachuteModule } from "../parachute";
+import { Permission, Plugin } from "../parachute";
 
-export default class AutoGrouping extends ParachuteModule {
+export default class AutoGrouping extends Plugin {
   readonly label: string = "team";
   readonly permission: Permission = Permission.USER;
   readonly name: string = "AutoGrouping";

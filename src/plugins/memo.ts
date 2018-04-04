@@ -1,8 +1,8 @@
 import { Client, Message, Collection, Member } from "eris";
-import { Permission, ParachuteModule } from "../parachute";
+import { Permission, Plugin } from "../parachute";
 import DiscordMemo from "./lib/discord_memo"
 
-export default class Memo extends ParachuteModule {
+export default class Memo extends Plugin {
   readonly label: string = "memo";
   readonly permission: Permission = Permission.USER;
   readonly name: string = "Memo";

@@ -1,7 +1,7 @@
 import { Client, Message, Collection, Member } from "eris";
-import { Permission, ParachuteModule } from "../parachute";
+import { Permission, Plugin } from "../parachute";
 
-export default class Stop extends ParachuteModule{
+export default class Stop extends Plugin{
   readonly label: string = "stop";
   readonly permission: Permission = Permission.OWNER;
   readonly name: string = "Stop";

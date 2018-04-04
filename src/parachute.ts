@@ -27,7 +27,7 @@ namespace Parachute {
     // コマンドの登録
     public register_command(module: any) {
       
-      const pm: ParachuteModule = new module(this.client);
+      const pm: Plugin = new module(this.client);
 
       // 必要なのものがとりあえず揃っている
       if (!(pm.label && pm.name && pm.run)) return;
@@ -72,7 +72,7 @@ namespace Parachute {
     }
   }
 
-  export abstract class ParachuteModule {
+  export abstract class Plugin {
     abstract readonly label: string;
     abstract readonly permission: Permission;
     abstract readonly name: string;

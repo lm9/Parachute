@@ -1,4 +1,4 @@
-import { Parachute, Permission, ParachuteModule } from "./parachute";
+import { Parachute, Permission } from "./parachute";
 import * as fs from "fs-extra";
 import { Client, Message, Collection, Member } from "eris";
 
@@ -11,12 +11,12 @@ const prefix = settings["command_prefix"];
 
 const parachute = new Parachute(token, owner, prefix);
 
-fs.readdir("./src/modules/", (err: NodeJS.ErrnoException, files: string[]) => {
+fs.readdir("./src/plugins/", (err: NodeJS.ErrnoException, files: string[]) => {
   files.forEach((file: string) => {
     const m = file.match(/([a-z0-9_]+)\..{1,4}$/);
     if (m) {
-      import("./modules/" + m[1]).then((ParachuteModule) => {        
-        parachute.register_command(ParachuteModule.default);
+      import("./plugins/" + m[1]).then((plugin) => {        
+        parachute.register_command(plugin.default);
       });
     }
   });

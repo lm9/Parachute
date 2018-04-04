@@ -1,7 +1,7 @@
 import { Client, Message, Collection, Member } from "eris";
-import { Permission, ParachuteModule } from "../parachute";
+import { Permission, Plugin } from "../parachute";
 
-export default class PingPong extends ParachuteModule {
+export default class PingPong extends Plugin {
   readonly label: string = "ping";
   readonly permission: Permission = Permission.USER;
   readonly name: string = "PingPong";
