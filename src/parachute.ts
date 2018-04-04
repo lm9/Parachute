@@ -1,61 +1,40 @@
-import { Client, Message, Member, AnyChannel, VoiceChannel, Collection, VoiceState } from 'eris';
+import { Client, Message, Member, Collection, VoiceState } from "eris";
 
-module Parachute {
-  export enum Permission
-  {
+namespace Parachute {
+  export enum Permission {
     OWNER,
     ADMIN,
-    USER,
+    USER
   }
 
-  export class Parachute{
+  export class Parachute {
     private client: Client;
     private owner: string; // オーナのid
     private prefix: string;
 
-    constructor(token: string, owner: string, prefix: string = '!') {
+    constructor(token: string, owner: string, prefix: string = "!") {
       this.client = new Client(token);
       this.owner = owner;
       this.prefix = prefix;
       this.setup();
     }
-  
+
     // 実行
     run() {
       this.client.connect();
     }
-  
+
     // コマンドの登録
-    public register_command(label: string, command: Function | ParachuteModule, permission: Permission): void;
-    public register_command(module: { label: string, command: Function | ParachuteModule, permission: Permission }): void;
-    public register_command(...args: any[]) {
-      let label: string;
-      let command: Function | ParachuteModule;
-      let permission: Permission;
+    public register_command(module: any) {
+      
+      const pm: ParachuteModule = new module(this.client);
 
-      switch (args.length) {
-        case 1:
-          label = args[0].label;
-          command = args[0].command;
-          permission = args[0].permission;
-          break;
-        case 3:
-          label = args[0];
-          command = args[1];
-          permission = args[2];
-          break;
-        default:
-          return;
-      }
+      // 必要なのものがとりあえず揃っている
+      if (!(pm.label && pm.name && pm.run)) return;
 
-      // clientを入れてやる
-      if (!(command instanceof Function)) {
-        command.setup(this.client);
-      }
-
-      this.client.on('messageCreate', async (message: Message) => {
+      this.client.on("messageCreate", async (message: Message) => {
         // Guildによって切り分けたりもしたいが
-        switch (permission) {
+        switch (pm.permission) {
           case Permission.USER:
             break;
           case Permission.OWNER:
@@ -65,29 +44,26 @@ module Parachute {
             // 特に今はないので
             break;
         }
-  
-        const args = this.command_match(message.content, label);
+
+        const args = this.command_match(message.content, pm.label);
         if (args) {
-          if (command instanceof Function) {
-            command(this.client, message, args);
-          } else {
-            command.run(message, args);            
-          }
+          pm.run(message, args);
         }
       });
-      console.log(`Loaded module: ${command.name}`);      
-    }
       
+      console.log(`Loaded module: ${pm.name}`);
+    }
+
     // セットアップ
     private setup() {
-      this.client.on('ready', () => {
+      this.client.on("ready", () => {
         console.log(`Ready as ${this.client.user.username}#${this.client.user.discriminator}`);
       });
     }
-    
+
     // コマンドのチェック
     private command_match(content: string, command: string): string[] | null {
-      const args = content.split(/[ 　]+/);
+      const args = content.split(/ +/);
       if (args[0] === `${this.prefix}${command}`) {
         args.shift();
         return args;
@@ -95,13 +71,18 @@ module Parachute {
       return null;
     }
   }
-  export interface ParachuteModule {
-    readonly label: string;
-    readonly permission: Permission;
-    readonly name: string;
-    setup(client: Client): void;
-    run(message: Message, args: string[]): void;
+
+  export abstract class ParachuteModule {
+    abstract readonly label: string;
+    abstract readonly permission: Permission;
+    abstract readonly name: string;
+    protected client: Client;
+    constructor(client: Client) {
+      this.client = client;
+    }
+    abstract run(message: Message, args: string[]): void;
   }
+
 }
 
 export = Parachute;

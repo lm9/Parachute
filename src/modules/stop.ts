@@ -1,8 +1,16 @@
-import { Client, Message, Collection, Member } from 'eris';
-import { Permission } from '../parachute';
+import { Client, Message, Collection, Member } from "eris";
+import { Permission, ParachuteModule } from "../parachute";
 
-function stop(client: Client, message: Message, args: string[] = []) {
-  client.disconnect({ reconnect: false });    
+export default class Stop extends ParachuteModule{
+  readonly label: string = "stop";
+  readonly permission: Permission = Permission.OWNER;
+  readonly name: string = "Stop";
+
+  constructor(client: Client) {
+    super(client);
+  }
+
+  run(message: Message, args: string[] = []) {
+    if (this.client) this.client.disconnect({ reconnect: false });
+  }
 }
-
-export = { label: 'stop', command: stop, permission: Permission.OWNER };
