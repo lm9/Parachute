@@ -12,7 +12,6 @@ namespace sqlite3ex{
         }
         
         run(query: string) {
-            this.db.prepare("");
             return new Promise((resolve, reject) => {
                 this.db.serialize(() => {
                     this.db.run(query, (err) => {
