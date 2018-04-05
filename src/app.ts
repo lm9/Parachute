@@ -1,2 +1,2 @@
-import parachute = require("./bot");
-parachute.run();
+import bot from "./bot";
+bot.run();

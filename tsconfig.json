@@ -10,8 +10,7 @@
     ],
     "esModuleInterop": true
   },
-  "files": [
-    "src/bot.ts",
-    "src/app.ts",
-  ],
+  "include": [
+    "./src/**/*"
+  ]
 }

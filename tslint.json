@@ -1,0 +1,13 @@
+{
+  "rulesDirectory": ["tslint-plugin-prettier"],
+  "rules": {
+    "max-line-length": [true, 150],
+    "object-shorthand-properties-first": false,
+    "radix": false,
+    "prettier": true,
+    "ter-arrow-parens": false,
+    "no-increment-decrement": false,
+    "no-boolean-literal-compare": true,
+    "match-default-export-name": false
+  }
+}
