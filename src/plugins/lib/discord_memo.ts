@@ -27,23 +27,27 @@ class DiscordMemo {
 			new Promise((resolve, reject) => {
 				let err = false;
 				sentences.forEach(async sentence => {
-					stmt.run(uuid(), user_id, channel_id, sentence)
-					.catch(() => {
-						err = true;
-					}).then(() => {
-						if (err) reject();
-						else resolve();
-					})
+					stmt
+						.run(uuid(), user_id, channel_id, sentence)
+						.catch(() => {
+							err = true;
+						})
+						.then(() => {
+							if (err) reject();
+							else resolve();
+						});
 				});
-			}).then(() => {
-				this.db.commit();
-			}).catch(() => {
-				this.db.rollback();
-			}).then(() => {
-				stmt.finalize();
-			});
+			})
+				.then(() => {
+					this.db.commit();
+				})
+				.catch(() => {
+					this.db.rollback();
+				})
+				.then(() => {
+					stmt.finalize();
+				});
 		});
-
 	}
 
 	async list(user_id: string, channel_id: string) {

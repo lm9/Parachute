@@ -36,12 +36,16 @@ namespace sqlite3ex {
 			return new Promise<any[]>((resolve, reject) => {
 				this.db.serialize(() => {
 					const rows: any[] = [];
-					this.db.each(query, (err, row) => {
-						if (!err) rows.push(row);
-					}, (err, n) => {
-						if (err) reject(err);
-						else resolve(rows);
-					});
+					this.db.each(
+						query,
+						(err, row) => {
+							if (!err) rows.push(row);
+						},
+						(err, n) => {
+							if (err) reject(err);
+							else resolve(rows);
+						}
+					);
 				});
 			});
 		}

@@ -18,7 +18,7 @@ export default class Memo extends Plugin {
 		if (args) {
 			new Promise<string[]>((resolve, reject) => {
 				const new_memos: string[] = [];
-				args.forEach((arg) => {
+				args.forEach(arg => {
 					switch (arg) {
 						case "-h":
 							try {
@@ -29,10 +29,9 @@ export default class Memo extends Plugin {
 							}
 							break;
 						case "-l":
-							this.memo.list(message.author.id, message.channel.id)
-							.then((memos) => {
+							this.memo.list(message.author.id, message.channel.id).then(memos => {
 								let response = "";
-								memos.forEach((memo) => {
+								memos.forEach(memo => {
 									response += `${memo.sentence} [${memo.id}]\n`;
 								});
 								try {
@@ -49,7 +48,7 @@ export default class Memo extends Plugin {
 					}
 					resolve(new_memos);
 				});
-			}).then((new_memos) => {
+			}).then(new_memos => {
 				if (new_memos) this.memo.add(message.author.id, message.channel.id, new_memos);
 			});
 		} else {
