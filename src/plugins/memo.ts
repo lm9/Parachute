@@ -18,8 +18,8 @@ export default class Memo extends Plugin {
 		if (args) {
 			new Promise<string[]>((resolve, reject) => {
 				const new_memos: string[] = [];
-				args.forEach(arg => {
-					switch (arg) {
+				for (let i = 0; i < args.length; ++i) {
+					switch (args[i]) {
 						case "-h":
 							try {
 								message.channel.createMessage("<HELP MESSAGE>");
@@ -42,12 +42,16 @@ export default class Memo extends Plugin {
 								}
 							});
 							break;
+						case "-d":
+							this.memo.remove(message.author.id, args[i + 1]);
+							i++;
+							break;
 						default:
-							if (!arg.startsWith("-")) new_memos.push(arg);
+							if (!args[i].startsWith("-")) new_memos.push(args[i]);
 							break;
 					}
 					resolve(new_memos);
-				});
+				}
 			}).then(new_memos => {
 				if (new_memos) this.memo.add(message.author.id, message.channel.id, new_memos);
 			});
