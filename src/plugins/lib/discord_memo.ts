@@ -12,7 +12,7 @@ class DiscordMemo {
 			user_id TEXT NOT NULL,
 			channel_id TEXT NOT NULL,
 			sentence TEXT NOT NULL,
-			created_at default CURRENT_TIMESTAMP
+			created_at DEFAULT CURRENT_TIMESTAMP
 		);
 		`);
 	}
@@ -52,10 +52,20 @@ class DiscordMemo {
 
 	async list(user_id: string, channel_id: string) {
 		const stmt = await this.db.prepare(`
-		SELECT * from memo
+		SELECT * FROM memo
 		WHERE user_id = ? AND channel_id = ?
 		`);
 		const result = await stmt.all(user_id, channel_id);
+		await stmt.finalize();
+		return result;
+	}
+
+	async remove(user_id: string, memo_id: string) {
+		const stmt = await this.db.prepare(`
+		DELETE FROM memo
+		WHERE user_id = ? AND id = ?
+		`);
+		const result = await stmt.run(user_id, memo_id);
 		await stmt.finalize();
 		return result;
 	}

@@ -7,8 +7,8 @@ export default class Info extends Plugin {
 	readonly name: string = "Info";
 	private waked_at: Date;
 
-	constructor(client: Client) {
-		super(client);
+	constructor(client: Client, settings?: any, keys?: any) {
+		super(client, settings, keys);
 		this.waked_at = new Date();
 	}
 

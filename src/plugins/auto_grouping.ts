@@ -6,8 +6,8 @@ export default class AutoGrouping extends Plugin {
 	readonly permission: Permission = Permission.USER;
 	readonly name: string = "AutoGrouping";
 
-	constructor(client: Client) {
-		super(client);
+	constructor(client: Client, settings?: any, keys?: any) {
+		super(client, settings, keys);
 	}
 
 	run(message: Message, args: string[] = []) {

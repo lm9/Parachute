@@ -7,8 +7,8 @@ export default class PingPong extends Plugin {
 	readonly name: string = "PingPong";
 	private called_count: { [key: string]: number } = {};
 
-	constructor(client: Client) {
-		super(client);
+	constructor(client: Client, settings?: any, keys?: any) {
+		super(client, settings, keys);
 	}
 
 	public run(message: Message, args: string[] = []) {

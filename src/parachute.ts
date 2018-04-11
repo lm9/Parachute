@@ -1,4 +1,5 @@
 import { Client, Message, Member, Collection, VoiceState } from "eris";
+import * as fs from "fs-extra";
 
 namespace Parachute {
 	export enum Permission {
@@ -7,15 +8,41 @@ namespace Parachute {
 		USER
 	}
 
+	export class Keys {
+		readonly data: any;
+		readonly token: string;
+		readonly plugins?: { [key: string]: any };
+
+		constructor(json: string, encoding: string = "utf8") {
+			this.data = JSON.parse(fs.readFileSync(json, encoding));
+			this.token = this.data["token"];
+			this.plugins = this.data["plugins"];
+		}
+	}
+
+	export class Settings {
+		readonly data: any;
+		readonly owner: string;
+		readonly prefix: string;
+		readonly plugins?: { [key: string]: any };
+
+		constructor(json: string, encoding: string = "utf8") {
+			this.data = JSON.parse(fs.readFileSync(json, encoding));
+			this.plugins = this.data["plugins"];
+			this.owner = this.data["token"];
+			this.prefix = this.data["command_prefix"];
+		}
+	}
+
 	export class Parachute {
 		private client: Client;
-		private owner: string; // オーナのid
-		private prefix: string;
+		private keys: Keys;
+		private settings: Settings;
 
-		constructor(token: string, owner: string, prefix: string = "!") {
-			this.client = new Client(token);
-			this.owner = owner;
-			this.prefix = prefix;
+		constructor(keys_json: string, settings_json: string) {
+			this.keys = new Keys(keys_json);
+			this.settings = new Settings(settings_json);
+			this.client = new Client(this.keys.token);
 			this.setup();
 		}
 
@@ -26,7 +53,17 @@ namespace Parachute {
 
 		// コマンドの登録
 		public register_command(module: any) {
-			const pm: Plugin = new module(this.client);
+			if (
+				this.settings.plugins &&
+				this.settings.plugins[module.name] &&
+				this.settings.plugins[module.name]["disable"]
+			)
+				return;
+			const pm: Plugin = new module(
+				this.client,
+				this.settings.plugins ? this.settings.plugins[module.name] : {},
+				this.keys.plugins ? this.keys.plugins[module.name] : {}
+			);
 			// 必要なのものがとりあえず揃っている
 			if (!(pm.label && pm.name && pm.run)) return;
 			this.client.on("messageCreate", async (message: Message) => {
@@ -35,7 +72,7 @@ namespace Parachute {
 					case Permission.USER:
 						break;
 					case Permission.OWNER:
-						if (message.author.id !== this.owner) return;
+						if (message.author.id !== this.settings.owner) return;
 						break;
 					case Permission.ADMIN:
 						// 特に今はないので
@@ -60,7 +97,7 @@ namespace Parachute {
 		// コマンドのチェック
 		private command_match(content: string, command: string): string[] | null {
 			const args = content.split(/ +/);
-			if (args[0] === `${this.prefix}${command}`) {
+			if (args[0] === `${this.settings.prefix}${command}`) {
 				args.shift();
 				return args;
 			}
@@ -72,9 +109,13 @@ namespace Parachute {
 		abstract readonly label: string;
 		abstract readonly permission: Permission;
 		abstract readonly name: string;
+		protected settings: any;
+		protected keys: any;
 		protected client: Client;
-		constructor(client: Client) {
+		constructor(client: Client, settings?: any, keys?: any) {
 			this.client = client;
+			this.settings = settings;
+			this.keys = keys;
 		}
 		abstract run(message: Message, args: string[]): void;
 	}
