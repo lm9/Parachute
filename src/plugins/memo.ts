@@ -14,53 +14,58 @@ export default class Memo extends Plugin {
 		this.memo = new DiscordMemo("./db/demo.db");
 	}
 
-	public run(message: Message, args: string[] = []) {
-		if (args) {
-			new Promise<string[]>((resolve, reject) => {
-				const new_memos: string[] = [];
-				for (let i = 0; i < args.length; ++i) {
-					switch (args[i]) {
-						case "-h":
-							try {
-								message.channel.createMessage("<HELP MESSAGE>");
-								resolve();
-							} catch (e) {
-								reject(e);
-							}
-							break;
-						case "-l":
-							this.memo.list(message.author.id, message.channel.id).then(memos => {
-								let response = "";
-								memos.forEach(memo => {
-									response += `${memo.sentence} [${memo.id}]\n`;
-								});
-								try {
-									message.channel.createMessage(response);
-									resolve();
-								} catch (e) {
-									reject(e);
-								}
-							});
-							break;
-						case "-d":
-							this.memo.remove(message.author.id, args[i + 1]);
-							i++;
-							break;
-						default:
-							if (!args[i].startsWith("-")) new_memos.push(args[i]);
-							break;
-					}
-					resolve(new_memos);
-				}
-			}).then(new_memos => {
-				if (new_memos) this.memo.add(message.author.id, message.channel.id, new_memos);
-			});
-		} else {
-			try {
-				message.channel.createMessage("引数を指定してね！");
-			} catch (e) {
-				console.log(e);
+	public async run(message: Message, args: string[] = []) {
+		if (!args) return; // 引数なし
+
+		const new_memos: string[] = [];
+		for (let i = 0; i < args.length; i++) {
+			switch (args[i]) {
+				case "-h":
+					await this.help(message);
+					break;
+				case "-l":
+					await this.list(message);
+					break;
+				case "-d":
+					await this.delete(message, args[++i]);
+					break;
+				default:
+					if (!args[i].startsWith("-")) await new_memos.push(args[i]);
+					break;
 			}
+		}
+
+		if (new_memos.length > 0) {
+			this.memo.add(message.author.id, message.channel.id, new_memos);
+		}
+	}
+
+	private help(message: Message) {
+		try {
+			message.channel.createMessage("\
+			-l: List your memos\n\
+			-d <memo's id>: delete memo\n\
+			-h: This help\n\
+			");
+		} catch (e) {
+			console.log(e);
+		}
+	}
+
+	private async delete(message: Message, id: string) {
+		await this.memo.remove(message.author.id, id);
+	}
+
+	private async list(message: Message) {
+		const memo_list = await this.memo.list(message.author.id, message.channel.id);
+		let response = "Your memos\n";
+		for (const memo of memo_list) {
+			response += `${memo.sentence} [${memo.id}]\n`;
+		}
+		try {
+			message.channel.createMessage(response);
+		} catch (e) {
+			console.log(e);
 		}
 	}
 }
