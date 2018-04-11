@@ -53,6 +53,12 @@ namespace Parachute {
 
 		// コマンドの登録
 		public register_command(module: any) {
+			if (
+				this.settings.plugins &&
+				this.settings.plugins[module.name] &&
+				this.settings.plugins[module.name]["disable"]
+			)
+				return;
 			const pm: Plugin = new module(
 				this.client,
 				this.settings.plugins ? this.settings.plugins[module.name] : {},
