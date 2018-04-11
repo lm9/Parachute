@@ -9,9 +9,9 @@ export default class PUBG extends Plugin {
 	readonly name: string = "PUBG";
 	readonly pubgclient: Chumacera.Client;
 
-	constructor(client: Client) {
-		super(client);
-		const key: string = JSON.parse(readFileSync("./confs/keys.json", "utf8"))["plugins"]["PUBG"]["API_KEY"];
+	constructor(client: Client, settings?: any, keys?: any) {
+		super(client, settings, keys);
+		const key: string = this.keys["API_KEY"];
 		this.pubgclient = new Chumacera.Client(key);
 	}
 

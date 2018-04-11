@@ -11,10 +11,12 @@ namespace Parachute {
 	export class Keys {
 		readonly data: any;
 		readonly token: string;
+		readonly plugins?: { [key: string]: any };
 
 		constructor(json: string, encoding: string = "utf8") {
 			this.data = JSON.parse(fs.readFileSync(json, encoding));
 			this.token = this.data["token"];
+			this.plugins = this.data["plugins"];
 		}
 	}
 
@@ -22,11 +24,13 @@ namespace Parachute {
 		readonly data: any;
 		readonly owner: string;
 		readonly prefix: string;
+		readonly plugins?: { [key: string]: any };
 
 		constructor(json: string, encoding: string = "utf8") {
 			this.data = JSON.parse(fs.readFileSync(json, encoding));
+			this.plugins = this.data["plugins"];
 			this.owner = this.data["token"];
-			this.prefix = this.data["prefix"];
+			this.prefix = this.data["command_prefix"];
 		}
 	}
 
@@ -49,7 +53,11 @@ namespace Parachute {
 
 		// コマンドの登録
 		public register_command(module: any) {
-			const pm: Plugin = new module(this.client);
+			const pm: Plugin = new module(
+				this.client,
+				this.settings.plugins ? this.settings.plugins[module.name] : {},
+				this.keys.plugins ? this.keys.plugins[module.name] : {}
+			);
 			// 必要なのものがとりあえず揃っている
 			if (!(pm.label && pm.name && pm.run)) return;
 			this.client.on("messageCreate", async (message: Message) => {
@@ -95,9 +103,13 @@ namespace Parachute {
 		abstract readonly label: string;
 		abstract readonly permission: Permission;
 		abstract readonly name: string;
+		protected settings: any;
+		protected keys: any;
 		protected client: Client;
-		constructor(client: Client) {
+		constructor(client: Client, settings?: any, keys?: any) {
 			this.client = client;
+			this.settings = settings;
+			this.keys = keys;
 		}
 		abstract run(message: Message, args: string[]): void;
 	}

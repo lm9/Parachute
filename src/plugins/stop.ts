@@ -6,8 +6,8 @@ export default class Stop extends Plugin {
 	readonly permission: Permission = Permission.OWNER;
 	readonly name: string = "Stop";
 
-	constructor(client: Client) {
-		super(client);
+	constructor(client: Client, settings?: any, keys?: any) {
+		super(client, settings, keys);
 	}
 
 	run(message: Message, args: string[] = []) {

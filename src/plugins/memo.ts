@@ -9,9 +9,9 @@ export default class Memo extends Plugin {
 	private called_count: { [key: string]: number } = {};
 	private memo: DiscordMemo;
 
-	constructor(client: Client) {
-		super(client);
-		this.memo = new DiscordMemo("./db/demo.db");
+	constructor(client: Client, settings?: any, keys?: any) {
+		super(client, settings, keys);
+		this.memo = new DiscordMemo(this.settings["db"]);
 	}
 
 	public async run(message: Message, args: string[] = []) {
