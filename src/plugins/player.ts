@@ -14,11 +14,13 @@ export default class Player extends Plugin {
 	} = {};
 	private otogumo: Otogumo.Client;
 	private cache: string; // キャッシュを突っ込んでおくディレクトリ
+	private default_volume: number;
 
 	constructor(client: Client, settings?: any, keys?: any) {
 		super(client, settings, keys);
 		this.otogumo = new Otogumo.Client(this.keys["client_id"], this.keys["client_secret"]);
 		this.cache = this.settings.cache;
+		this.default_volume = this.settings.default_volume ? this.settings.default_volume : 0.01;
 	}
 
 	public run(message: Message, args: string[] = []) {
@@ -75,6 +77,8 @@ export default class Player extends Plugin {
 		this.client
 			.joinVoiceChannel(message.member.voiceState.channelID)
 			.then(voice_connection => {
+				voice_connection.setVolume(this.default_volume);
+				this.log(`Now volume => ${voice_connection.volume}`);
 				this.states[voice_connection.channelID] = new VoiceState(voice_connection);
 			})
 			.catch(e => console.log(e));
@@ -114,42 +118,42 @@ export default class Player extends Plugin {
 
 	private stop(message: Message) {
 		if (!message.member || !message.member.voiceState.channelID) return;
-		if (!this.states[message.member.voiceState.channelID].isReady()) return; // 指定したチャンネルに参加していない
+		if (this.getState(message.member.voiceState.channelID) < 1) return; // 指定したチャンネルに参加していない
 		const channel_id = message.member.voiceState.channelID;
 		this.states[channel_id].stop();
 	}
 
 	private pause(message: Message) {
 		if (!message.member || !message.member.voiceState.channelID) return;
-		if (!this.states[message.member.voiceState.channelID].isReady()) return; // 指定したチャンネルに参加していない
+		if (this.getState(message.member.voiceState.channelID) < 1) return; // 指定したチャンネルに参加していない
 		const channel_id = message.member.voiceState.channelID;
 		this.states[channel_id].pause();
 	}
 
 	private resume(message: Message) {
 		if (!message.member || !message.member.voiceState.channelID) return;
-		if (!this.states[message.member.voiceState.channelID].isReady()) return; // 指定したチャンネルに参加していない
+		if (this.getState(message.member.voiceState.channelID) < 1) return; // 指定したチャンネルに参加していない
 		const channel_id = message.member.voiceState.channelID;
 		this.states[channel_id].resume();
 	}
 
 	private last(message: Message) {
 		if (!message.member || !message.member.voiceState.channelID) return;
-		if (!this.states[message.member.voiceState.channelID].isReady()) return; // 指定したチャンネルに参加していない
+		if (this.getState(message.member.voiceState.channelID) < 1) return; // 指定したチャンネルに参加していない
 		const channel_id = message.member.voiceState.channelID;
 		this.states[channel_id].last();
 	}
 
 	private start(message: Message) {
 		if (!message.member || !message.member.voiceState.channelID) return;
-		if (!this.states[message.member.voiceState.channelID].isReady()) return; // 指定したチャンネルに参加していない
+		if (this.getState(message.member.voiceState.channelID) < 1) return; // 指定したチャンネルに参加していない
 		const channel_id = message.member.voiceState.channelID;
 		this.states[channel_id].start();
 	}
 
 	private getNowplaying(message: Message) {
 		if (!message.member || !message.member.voiceState.channelID) return;
-		if (!this.states[message.member.voiceState.channelID].isReady()) return; // 指定したチャンネルに参加していない
+		if (this.getState(message.member.voiceState.channelID) < 1) return; // 指定したチャンネルに参加していない
 		const channel_id = message.member.voiceState.channelID;
 		const np = this.states[channel_id].getNowplayingTrack();
 		if (np) {
@@ -165,7 +169,7 @@ export default class Player extends Plugin {
 
 	private getQueue(message: Message) {
 		if (!message.member || !message.member.voiceState.channelID) return;
-		if (!this.states[message.member.voiceState.channelID].isReady()) return; // 指定したチャンネルに参加していない
+		if (this.getState(message.member.voiceState.channelID) < 1) return; // 指定したチャンネルに参加していない
 		const channel_id = message.member.voiceState.channelID;
 		let mes = "In queue\n";
 		for (const track of this.states[channel_id].getQueue()) {
@@ -180,9 +184,17 @@ export default class Player extends Plugin {
 
 	private clear(message: Message) {
 		if (!message.member || !message.member.voiceState.channelID) return;
-		if (!this.states[message.member.voiceState.channelID].isReady()) return; // 指定したチャンネルに参加していない
+		if (this.getState(message.member.voiceState.channelID) < 1) return; // 指定したチャンネルに参加していない
 		const channel_id = message.member.voiceState.channelID;
 		this.states[channel_id].clear();
+	}
+
+	private setVolume(message: Message, volume: number) {
+		if (!message.member || !message.member.voiceState.channelID) return;
+		if (this.getState(message.member.voiceState.channelID) < 1) return; // 指定したチャンネルに参加していない
+		const channel_id = message.member.voiceState.channelID;
+		this.states[channel_id].setVolume(volume);
+		this.log(`Now volume => ${this.states[channel_id].getVolume()}`);
 	}
 
 	private getState(channel_id: string) {
@@ -191,14 +203,6 @@ export default class Player extends Plugin {
 			return 1; // ready
 		else return 0; // 未準備
 	}
-
-	private setVolume(message: Message, volume: number) {
-		if (!message.member || !message.member.voiceState.channelID) return;
-		if (!this.states[message.member.voiceState.channelID].isReady()) return; // 指定したチャンネルに参加していない
-		const channel_id = message.member.voiceState.channelID;
-		this.states[channel_id].setVolume(volume);
-	}
-
 	private log(text: string) {
 		console.log(`[Player] ${text}`);
 	}

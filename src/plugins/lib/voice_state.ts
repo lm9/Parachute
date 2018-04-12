@@ -1,14 +1,21 @@
 import * as Otogumo from "otogumo";
-import { VoiceConnection } from "eris";
+import { VoiceConnection, VoiceResourceOptions } from "eris";
 export class Audio {
 	readonly file: string; // ファイルへの相対パス
 	readonly source: string; // SoundCloudへのリンク
 	readonly track: Otogumo.Track; // トラック情報
+	readonly options: VoiceResourceOptions;
 
-	constructor(file: string, source: string, track: Otogumo.Track) {
+	constructor(
+		file: string,
+		source: string,
+		track: Otogumo.Track,
+		options: VoiceResourceOptions = { inlineVolume: true }
+	) {
 		this.file = file;
 		this.source = source;
 		this.track = track;
+		this.options = options;
 	}
 }
 
@@ -50,7 +57,7 @@ export class VoiceState {
 			this.continue = false;
 			return; // queueに1件もなかったらダメです
 		}
-		this.voice_connection.play(this.nowplaying.file);
+		this.voice_connection.play(this.nowplaying.file, this.nowplaying.options);
 		this.voice_connection.on("end", () => {
 			if (this.continue) this.play(); // 終わり次第連続再生
 		});
@@ -103,5 +110,10 @@ export class VoiceState {
 	public setVolume(volume: number) {
 		if (!this.voice_connection) return; // voice_connectionがないとダメ
 		this.voice_connection.setVolume(volume);
+	}
+
+	public getVolume() {
+		if (!this.voice_connection) return; // voice_connectionがないとダメ
+		return this.voice_connection.volume;
 	}
 }
