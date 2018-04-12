@@ -6,3 +6,4 @@ confs/settings.json
 package-lock.json
 parachute.code-workspace
 db/demo.db
+cache/
