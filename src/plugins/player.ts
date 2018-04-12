@@ -15,12 +15,14 @@ export default class Player extends Plugin {
 	private otogumo: Otogumo.Client;
 	private cache: string; // キャッシュを突っ込んでおくディレクトリ
 	private default_volume: number;
+	private inline_volume: boolean;
 
 	constructor(client: Client, settings?: any, keys?: any) {
 		super(client, settings, keys);
 		this.otogumo = new Otogumo.Client(this.keys["client_id"], this.keys["client_secret"]);
 		this.cache = this.settings.cache;
 		this.default_volume = this.settings.default_volume ? this.settings.default_volume : 0.01;
+		this.inline_volume = this.settings.inline_volume ? this.settings.inline_volume : false;
 	}
 
 	public run(message: Message, args: string[] = []) {
@@ -111,7 +113,7 @@ export default class Player extends Plugin {
 		} catch (e) {
 			this.otogumo.download(track.stream_url, file).on("close", () => {
 				this.log(`Downloaded ${track.stream_url}`);
-				this.states[channel_id].push(new Audio(file, audio_url, track));
+				this.states[channel_id].push(new Audio(file, audio_url, track, { inlineVolume: this.inline_volume }));
 			});
 		}
 	}
