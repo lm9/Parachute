@@ -29,7 +29,7 @@ namespace Parachute {
 		constructor(json: string, encoding: string = "utf8") {
 			this.data = JSON.parse(fs.readFileSync(json, encoding));
 			this.plugins = this.data["plugins"];
-			this.owner = this.data["token"];
+			this.owner = this.data["owner"];
 			this.prefix = this.data["command_prefix"];
 		}
 	}
@@ -92,6 +92,25 @@ namespace Parachute {
 			this.client.on("ready", () => {
 				console.log(`Ready as ${this.client.user.username}#${this.client.user.discriminator}`);
 			});
+			// プラグイン側で終了が呼ばれたときの話
+			this.client.on("endOnPlugin", (...args: any[]) => {
+				this.close();
+			});
+		}
+
+		// 終了処理
+		private close() {
+			// ボイチャからリーブ
+			for (const voice_connection of this.client.voiceConnections) {
+				if (voice_connection[1].playing) voice_connection[1].stopPlaying();
+				this.client.leaveVoiceChannel(voice_connection[1].channelID);
+			}
+
+			// 接続終了
+			this.client.disconnect({ reconnect: false });
+
+			// さよなら～
+			process.exit(0);
 		}
 
 		// コマンドのチェック
