@@ -30,6 +30,7 @@
     "chumacera": "^1.0.6",
     "eris": "^0.8.5",
     "fs-extra": "^5.0.0",
+    "jimp": "^0.2.28",
     "otogumo": "0.0.2-beta",
     "request": "^2.85.0",
     "sqlite3": "^4.0.0",
