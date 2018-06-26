@@ -1,7 +1,7 @@
-import { Client, Message, Collection, Member } from "eris";
+import { Client, Message } from "eris";
 import { Permission, Plugin } from "../parachute";
 
-export default class PingPong extends Plugin {
+export = class PingPong extends Plugin {
 	readonly label: string = "ping";
 	readonly permission: Permission = Permission.USER;
 	readonly name: string = "PingPong";
@@ -16,18 +16,16 @@ export default class PingPong extends Plugin {
 			this.called_count[message.channel.id] = 0;
 		}
 		++this.called_count[message.channel.id];
-		try {
-			message.channel.createMessage("pong!");
-			if (0 < args.length) {
-				message.channel.createMessage(
+		message.channel.createMessage("pong!").catch(e => console.error(e));
+		if (0 < args.length) {
+			message.channel
+				.createMessage(
 					JSON.stringify({
 						args: args,
 						called_count: this.called_count[message.channel.id]
 					})
-				);
-			}
-		} catch (e) {
-			console.error(e);
+				)
+				.catch(e => console.error(e));
 		}
 	}
-}
+};

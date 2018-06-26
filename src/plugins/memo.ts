@@ -1,12 +1,11 @@
-import { Client, Message, Collection, Member } from "eris";
+import { Client, Message } from "eris";
 import { Permission, Plugin } from "../parachute";
 import DiscordMemo from "./lib/discord_memo";
 
-export default class Memo extends Plugin {
+export = class Memo extends Plugin {
 	readonly label: string = "memo";
 	readonly permission: Permission = Permission.USER;
 	readonly name: string = "Memo";
-	private called_count: { [key: string]: number } = {};
 	private memo: DiscordMemo;
 
 	constructor(client: Client, settings?: any, keys?: any) {
@@ -41,15 +40,13 @@ export default class Memo extends Plugin {
 	}
 
 	private help(message: Message) {
-		try {
-			message.channel.createMessage("\
-			-l: List your memos\n\
-			-d <memo's id>: delete memo\n\
-			-h: This help\n\
-			");
-		} catch (e) {
-			console.log(e);
-		}
+		message.channel
+			.createMessage(
+				`-l: List your memos
+				-d <memo's id>: delete memo
+				-h: This help`
+			)
+			.catch(e => console.error(e));
 	}
 
 	private async delete(message: Message, id: string) {
@@ -62,10 +59,6 @@ export default class Memo extends Plugin {
 		for (const memo of memo_list) {
 			response += `${memo.sentence} [${memo.id}]\n`;
 		}
-		try {
-			message.channel.createMessage(response);
-		} catch (e) {
-			console.log(e);
-		}
+		message.channel.createMessage(response).catch(e => console.error(e));
 	}
-}
+};

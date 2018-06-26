@@ -1,9 +1,8 @@
-import { Client, Message, Collection, Member } from "eris";
+import { Client, Message } from "eris";
 import { Permission, Plugin } from "../parachute";
 import * as Chumacera from "chumacera";
-import { readFileSync, read } from "fs-extra";
 
-export default class PUBG extends Plugin {
+export = class PUBG extends Plugin {
 	readonly label: string = "pubg";
 	readonly permission: Permission = Permission.USER;
 	readonly name: string = "PUBG";
@@ -32,14 +31,10 @@ export default class PUBG extends Plugin {
 						});
 				})
 					.then(mes => {
-						try {
-							message.channel.createMessage(mes);
-						} catch (e) {
-							console.log(e);
-						}
+						message.channel.createMessage(mes).catch(e => console.error(e));
 					})
-					.catch(e => console.log(e));
+					.catch(e => console.error(e));
 			}
 		}
 	}
-}
+};

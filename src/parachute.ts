@@ -1,4 +1,4 @@
-import { Client, Message, Member, Collection, VoiceState } from "eris";
+import { Client, Message } from "eris";
 import * as fs from "fs-extra";
 
 namespace Parachute {
@@ -35,7 +35,7 @@ namespace Parachute {
 	}
 
 	export class Parachute {
-		private client: Client;
+		readonly client: Client;
 		private keys: Keys;
 		private settings: Settings;
 

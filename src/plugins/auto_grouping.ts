@@ -1,7 +1,7 @@
-import { Client, Message, Collection, Member } from "eris";
+import { Client, Message, Member } from "eris";
 import { Permission, Plugin } from "../parachute";
 
-export default class AutoGrouping extends Plugin {
+export = class AutoGrouping extends Plugin {
 	readonly label: string = "team";
 	readonly permission: Permission = Permission.USER;
 	readonly name: string = "AutoGrouping";
@@ -37,7 +37,7 @@ export default class AutoGrouping extends Plugin {
 			mes = "人数が足りてないんじゃない？";
 		} else {
 			// シャッフルを行う
-			this.shuffle_members(members);
+			AutoGrouping.shuffle_members(members);
 
 			// メッセージの組み立て
 			mes += "TEAM1:";
@@ -57,7 +57,7 @@ export default class AutoGrouping extends Plugin {
 		}
 	}
 
-	private shuffle_members(members: Member[]) {
+	private static shuffle_members(members: Member[]) {
 		// Fisher-Yates shuffle
 		for (let i = members.length - 1; i > 0; i--) {
 			const n = Math.floor(Math.random() * (i + 1));
@@ -66,4 +66,4 @@ export default class AutoGrouping extends Plugin {
 			members[n] = tmp;
 		}
 	}
-}
+};

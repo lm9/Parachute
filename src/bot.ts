@@ -1,6 +1,5 @@
-import { Parachute, Permission } from "./parachute";
+import { Parachute } from "./parachute";
 import * as fs from "fs-extra";
-import { Client, Message, Collection, Member } from "eris";
 
 const parachute = new Parachute("./confs/keys.json", "./confs/settings.json");
 

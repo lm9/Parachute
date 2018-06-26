@@ -2,7 +2,7 @@ import { Message, Attachment } from "eris";
 import { Permission, Plugin } from "../parachute";
 import * as Jimp from "jimp";
 
-export default class Img extends Plugin {
+export = class Img extends Plugin {
 	readonly label: string = "img";
 	readonly permission: Permission = Permission.USER;
 	readonly name: string = "Img";
@@ -22,7 +22,7 @@ export default class Img extends Plugin {
 								message.channel.createMessage("できたよ", { file: buf, name: imgFile.filename });
 							});
 						})
-						.catch(err => console.log(err));
+						.catch(err => console.error(err));
 				});
 				break;
 			default:
@@ -54,4 +54,4 @@ export default class Img extends Plugin {
 			});
 		});
 	}
-}
+};

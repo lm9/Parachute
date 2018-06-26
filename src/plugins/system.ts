@@ -1,7 +1,7 @@
-import { Client, Message, Collection, Member } from "eris";
+import { Client, Message } from "eris";
 import { Permission, Plugin } from "../parachute";
 
-export default class System extends Plugin {
+export = class System extends Plugin {
 	readonly label: string = "system";
 	readonly permission: Permission = Permission.OWNER;
 	readonly name: string = "System";
@@ -19,4 +19,4 @@ export default class System extends Plugin {
 				break;
 		}
 	}
-}
+};

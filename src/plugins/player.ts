@@ -1,11 +1,10 @@
-import { Client, Message, Collection, Member, VoiceConnection } from "eris";
+import { Client, Message } from "eris";
 import { Permission, Plugin } from "../parachute";
 import * as Otogumo from "otogumo";
-import uuid from "uuid";
 import fs from "fs-extra";
 import { VoiceState, Audio } from "./lib/voice_state";
 
-export default class Player extends Plugin {
+export = class Player extends Plugin {
 	readonly label: string = "player";
 	readonly permission: Permission = Permission.USER;
 	readonly name: string = "Player";
@@ -13,9 +12,9 @@ export default class Player extends Plugin {
 		[key: string]: VoiceState;
 	} = {};
 	private otogumo: Otogumo.Client;
-	private cache: string; // キャッシュを突っ込んでおくディレクトリ
+	readonly cache: string; // キャッシュを突っ込んでおくディレクトリ
 	private default_volume: number;
-	private inline_volume: boolean;
+	readonly inline_volume: boolean;
 
 	constructor(client: Client, settings?: any, keys?: any) {
 		super(client, settings, keys);
@@ -80,7 +79,7 @@ export default class Player extends Plugin {
 			.joinVoiceChannel(message.member.voiceState.channelID)
 			.then(voice_connection => {
 				voice_connection.setVolume(this.default_volume);
-				this.log(`Now volume => ${voice_connection.volume}`);
+				Player.log(`Now volume => ${voice_connection.volume}`);
 				this.states[voice_connection.channelID] = new VoiceState(voice_connection);
 			})
 			.catch(e => console.log(e));
@@ -112,7 +111,7 @@ export default class Player extends Plugin {
 			this.states[channel_id].push(new Audio(file, audio_url, track));
 		} catch (e) {
 			this.otogumo.download(track.stream_url, file).on("close", () => {
-				this.log(`Downloaded ${track.stream_url}`);
+				Player.log(`Downloaded ${track.stream_url}`);
 				this.states[channel_id].push(new Audio(file, audio_url, track, { inlineVolume: this.inline_volume }));
 			});
 		}
@@ -159,13 +158,9 @@ export default class Player extends Plugin {
 		const channel_id = message.member.voiceState.channelID;
 		const np = this.states[channel_id].getNowplayingTrack();
 		if (np) {
-			try {
-				message.channel.createMessage(
-					`[Player] Nowplaying: ${np.user.username} - ${np.title} ${np.permalink_url}`
-				);
-			} catch (e) {
-				this.log(e);
-			}
+			message.channel
+				.createMessage(`[Player] Nowplaying: ${np.user.username} - ${np.title} ${np.permalink_url}`)
+				.catch(e => Player.log(e));
 		}
 	}
 
@@ -177,11 +172,9 @@ export default class Player extends Plugin {
 		for (const track of this.states[channel_id].getQueue()) {
 			mes += `${track.title}\n`;
 		}
-		try {
-			message.channel.createMessage(mes === "In queue\n" ? "キューには何も残っていません" : mes);
-		} catch (e) {
-			this.log(e);
-		}
+		message.channel
+			.createMessage(mes === "In queue\n" ? "キューには何も残っていません" : mes)
+			.catch(e => Player.log(e));
 	}
 
 	private clear(message: Message) {
@@ -196,7 +189,7 @@ export default class Player extends Plugin {
 		if (this.getState(message.member.voiceState.channelID) < 1) return; // 指定したチャンネルに参加していない
 		const channel_id = message.member.voiceState.channelID;
 		this.states[channel_id].setVolume(volume);
-		this.log(`Now volume => ${this.states[channel_id].getVolume()}`);
+		Player.log(`Now volume => ${this.states[channel_id].getVolume()}`);
 	}
 
 	private getState(channel_id: string) {
@@ -205,7 +198,7 @@ export default class Player extends Plugin {
 			return 1; // ready
 		else return 0; // 未準備
 	}
-	private log(text: string) {
+	private static log(text: string) {
 		console.log(`[Player] ${text}`);
 	}
-}
+};
