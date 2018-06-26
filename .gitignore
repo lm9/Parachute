@@ -8,4 +8,5 @@ parachute.code-workspace
 db/demo.db
 cache/
 .vscode/
+.idea/
 doc/

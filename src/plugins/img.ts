@@ -1,4 +1,4 @@
-import { Client, Message, Collection, Member, Attachment } from "eris";
+import { Message, Attachment } from "eris";
 import { Permission, Plugin } from "../parachute";
 import * as Jimp from "jimp";
 
@@ -8,7 +8,7 @@ export default class Img extends Plugin {
 	readonly name: string = "Img";
 
 	public run(message: Message, args: string[] = []) {
-		const imgFile = this.searchImgFile(message.attachments);
+		const imgFile = Img.searchImgFile(message.attachments);
 		if (!imgFile) return;
 
 		switch (args[0]) {
@@ -30,7 +30,7 @@ export default class Img extends Plugin {
 		}
 	}
 
-	private searchImgFile(attachments: Attachment[]) {
+	private static searchImgFile(attachments: Attachment[]) {
 		for (const attachment of attachments) {
 			if (attachment.filename.match(/\.(jpeg|jpg|png|gif|)$/i)) {
 				return attachment;
